@@ -54,6 +54,10 @@ class ScheduleCommandsSubscriber(Node):
             else:
                 self.get_logger().error(f'Unknown MOVE action: {action_}')
                 return
+        elif action_ == "CHARGE":
+            msg.type = 'charge'
+            msg.target_location = ""
+
         else:
             self.get_logger().error(f'Unsupported action type: {action_}')
             return
