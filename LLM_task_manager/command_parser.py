@@ -57,17 +57,24 @@ class ScheduleCommandsSubscriber(Node):
             if action_ == "MOVE_C":
                 msg.target_location = "charging"
             elif action_ == "MOVE_S":
-                msg.target_location = "storage"
+                msg.target_location = "pallet0"
             elif action_ == "MOVE_B":
-                msg.target_location = "build"
+                msg.target_location = "pallet1"
             else:
                 self.get_logger().error(f'Unknown MOVE action: {action_}')
                 return
         elif action_ == "CHARGE":
             msg.type = 'charge'
             msg.target_location = ""
-
-
+        elif action_ == "PICK_H":
+            msg.type = 'pick'
+            msg.object = 'h_beam0'
+        elif action_ == 'PICK_V':
+            msg.type = 'pick'
+            msg.object = 'v_beam0'
+        elif action_ == 'PLACE':
+            msg.type = 'place'
+            msg.target_location = 'pallet1'
         else:
             self.get_logger().error(f'Unsupported action type: {action_}')
             return
