@@ -18,6 +18,10 @@ class ScheduleCommandsSubscriber(Node):
             TaskAction,
             'commanded_action',
             10)
+        
+        # Initialize counters for pick actions
+        self.pick_h_counter = 0
+        self.pick_v_counter = 0
 
     def listener_callback(self, msg):
         self.get_logger().info(f'Received message: {msg.data}')
@@ -68,10 +72,12 @@ class ScheduleCommandsSubscriber(Node):
             msg.target_location = ""
         elif action_ == "PICK_H":
             msg.type = 'pick'
-            msg.object = 'h_beam0'
+            msg.object = f'h_beam{self.pick_h_counter}'
+            self.pick_h_counter += 1
         elif action_ == 'PICK_V':
             msg.type = 'pick'
-            msg.object = 'v_beam0'
+            msg.object = f'v_beam{self.pick_v_counter}'
+            self.pick_v_counter += 1
         elif action_ == 'PLACE':
             msg.type = 'place'
             msg.target_location = 'pallet1'
