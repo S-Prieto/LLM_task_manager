@@ -14,6 +14,16 @@ class ScheduleCommandsSubscriber(Node):
             'schedule_commands',
             self.listener_callback,
             10)
+        self.robot_1_subscription = self.create_subscription(
+            String,
+            'robot_1/robot_state',
+            self.listener_callback,
+            10)
+        self.robot_2_subscription = self.create_subscription(
+            String,
+            'robot_2/robot_state',
+            self.listener_callback,
+            10)
         self.publisher = self.create_publisher(
             TaskAction,
             'commanded_action',
@@ -22,6 +32,8 @@ class ScheduleCommandsSubscriber(Node):
         # Initialize counters for pick actions
         self.pick_h_counter = 0
         self.pick_v_counter = 0
+
+        self.robot_states = {"robot_1": None, "robot_2": None}
 
     def listener_callback(self, msg):
         self.get_logger().info(f'Received message: {msg.data}')
@@ -36,6 +48,10 @@ class ScheduleCommandsSubscriber(Node):
             for i, (current_location, action, cargo, battery) in enumerate(zip(current_location_, action_, internal_cargo_, battery_)):
                 robot_id = f'robot_{i+1}'
                 self.publish_commanded_action(robot_id, step_, current_location, action, cargo, placed_bricks_, battery)
+
+    def robot_state_callback(self, msg):
+        robot_id = msg._topic_name.split('/')[0]
+        self.robot_states[robot_id] = msg.data
 
 
     def parse_message(self, message):
@@ -81,6 +97,25 @@ class ScheduleCommandsSubscriber(Node):
         elif action_ == 'PLACE':
             msg.type = 'place'
             msg.target_location = 'pallet1'
+            if robot_id in self.robot_states and self.robot_states[robot_id]:
+                manipulated_object = self.robot_states[robot_id]
+                if manipulated_object.startswith('h_beam'):
+                    self.get_logger().info(f'Placing h_beam: {manipulated_object}')
+                elif manipulated_object.startswith('v_beam'):
+                    self.get_logger().info(f'Placing v_beam: {manipulated_object}')
+                else:
+                    self.get_logger().error(f'Unknown manipulated object: {manipulated_object}')
+                    return
+            else:
+                self.get_logger().error(f'No robot state available for {robot_id}')
+                return
+            # msg.pose.position.x = -0.5
+            # msg.pose.position.y = 4.7
+            # msg.pose.orientation.x = 0.0
+            # msg.pose.orientation.y = 0.0
+            # msg.pose.orientation.z = 0.0 
+            # msg.pose.orientation.w = 1.0
+           
         else:
             self.get_logger().error(f'Unsupported action type: {action_}')
             return
