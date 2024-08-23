@@ -97,6 +97,8 @@ class ScheduleCommandsSubscriber(Node):
         elif action_ == 'PLACE':
             msg.type = 'place'
             msg.target_location = 'pallet1'
+            self.get_logger().info(f'Robot states (general): {self.robot_states}')
+            self.get_logger().info(f'Robot state: {self.robot_states[robot_id]}')
             if robot_id in self.robot_states and self.robot_states[robot_id]:
                 manipulated_object = self.robot_states[robot_id]
                 if manipulated_object.startswith('h_beam'):
