@@ -1,4 +1,5 @@
 from openai import OpenAI
+from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 
@@ -11,13 +12,37 @@ api_key = os.getenv("OPENAI_API_KEY")
 # Initialize the OpenAI client with the API key
 client = OpenAI(api_key=api_key)
 
-# Create the assistant
+# Define the function for step and action
+step_action_function = {
+    "type": "function",
+    "function": {
+        "name": "describe_process",
+        "description": "Describes a process in terms of steps and actions",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "step": {
+                    "type": "integer",
+                    "description": "The step number in the process"
+                },
+                "action": {
+                    "type": "string",
+                    "description": "The action to be performed at this step"
+                }
+            },
+            "required": ["step", "action"],
+            "additionalProperties": False
+        },
+        "strict": True
+    }
+}
+
+# Create the assistant with structured output using the function
 assistant = client.beta.assistants.create(
     name="LLM_task_manager_TEST",
-    instructions="Whatever number you're given, multiply it by 10. Do not output any message, just the number",
-    tools=[{"type": "code_interpreter"}],
-    model="gpt-4o-mini"
-    response_format="text"
+    instructions="When describing a process, use the provided function to output each step as a numbered step with an associated action.",
+    model="gpt-4o-mini",
+    tools=[step_action_function]  # Add the function for steps and actions
 )
 
 # Store the assistant ID
