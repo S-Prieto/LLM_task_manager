@@ -22,7 +22,7 @@ client = OpenAI(api_key=api_key)
 message = client.beta.threads.messages.create(
     thread_id=thread_id,
     role="user",
-    content="How do you draw a circle"
+    content="How to draw a square now"
 )
 
 # Run assistant
@@ -32,7 +32,7 @@ run = client.beta.threads.runs.create(
 )
 
 # Poll for the assistant's response with a timeout
-timeout = 20  # Maximum time to wait in seconds
+timeout = 10  # Maximum time to wait in seconds
 poll_interval = 1  # Time between checks in seconds
 elapsed_time = 0
 

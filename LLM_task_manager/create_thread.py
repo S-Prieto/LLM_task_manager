@@ -12,37 +12,12 @@ api_key = os.getenv("OPENAI_API_KEY")
 # Initialize the OpenAI client with the API key
 client = OpenAI(api_key=api_key)
 
-# Define the function for step and action
-step_action_function = {
-    "type": "function",
-    "function": {
-        "name": "describe_process",
-        "description": "Describes a process in terms of steps and actions",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "step": {
-                    "type": "integer",
-                    "description": "The step number in the process"
-                },
-                "action": {
-                    "type": "string",
-                    "description": "The action to be performed at this step"
-                }
-            },
-            "required": ["step", "action"],
-            "additionalProperties": False
-        },
-        "strict": True
-    }
-}
-
 # Create the assistant with structured output using the function
 assistant = client.beta.assistants.create(
     name="LLM_task_manager_TEST",
     instructions="When describing a process, use the provided function to output each step as a numbered step with an associated action.",
     model="gpt-4o-mini",
-    tools=[step_action_function]  # Add the function for steps and actions
+    tools=[{"type": "code_interpreter"}]  # Add the function for steps and actions
 )
 
 # Store the assistant ID
