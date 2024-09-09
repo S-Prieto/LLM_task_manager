@@ -1,2 +1,2 @@
-THREAD_ID=thread_kDb3xE6YX4eyusLLqxBmzh4D
-ASSISTANT_ID=asst_3UsZCUCx2KghrntIslzrasCe
+THREAD_ID=thread_5oQAmHAjP1RjE2RuEsy0mUAE
+ASSISTANT_ID=asst_hREOC0VxrDxjd9jvxqOdw0qE
