@@ -27,6 +27,7 @@ step_action_function = {
                 },
                 "action": {
                     "type": "string",
+                    "enum": ["MOVE_S", "MOVE_B", "MOVE_C", "PICK", "BUILD", "CHARGE"],
                     "description": "The action to be performed at this step"
                 }
             },
